@@ -1,5 +1,6 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { Routes, Route } from "react-router-dom";
 
 import { ROUTEPATHS } from "./constants/routes";
@@ -18,9 +19,10 @@ function App() {
           <Route path={ROUTEPATHS.employees} element={<EmployeesContainer />} />
           <Route path={ROUTEPATHS.profile} element={<ProfileContainer />} />
         </Routes>
+        <ReactQueryDevtools />
       </QueryClientProvider>
     </Layout>
   );
 }
 
-export default App;
+export { App, client }

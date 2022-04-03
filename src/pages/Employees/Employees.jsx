@@ -1,9 +1,6 @@
-import React, { useState } from "react";
-import { useMutation } from 'react-query';
+import React from "react";
 import Button from "@mui/material/Button";
-import LinearProgress from "@material-ui/core/LinearProgress";
 
-import { addNewEmployee } from '../../api/addNewEmployee'
 import {
   Box,
   Header,
@@ -11,64 +8,54 @@ import {
   ButtonContainer,
 } from "./styled";
 
-import ModalWindow from '../../components/ModalWindow/ModalWindow';
+import { client } from '../../App';
+
 import EmployeeCard from "./EmployeeCard";
+import ModalWindow from "../../components/ModalWindow/ModalWindow";
 
-const Employees = ({ data }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const Employees = ({ data, isOpen, setIsOpen, handleCancel, isLoading, handleOpen, isEmployeeDeleting, addEmployeeMutation, editEmployeeMutation, deleteEmployeeMutation, isEmployeeAdding }) => {
 
-  const handleOpen = () => {
-    setIsOpen(true);
+  const onAddFormSubmit = async (formData) => {
+    await addEmployeeMutation({ ...formData });
+    setIsOpen(false);
+    client.invalidateQueries('employees');
   };
 
-  const handleCancel = () => {
-    setIsOpen(false)
-  };
-  //ADDING
-  const { mutateAsync, isLoading, } = useMutation(addNewEmployee);
-
-  const onFormSubmit = async (formData) => {
-    await mutateAsync({ ...formData });
-    setIsOpen(false)
-  };
-
-
-  if (isLoading)
-    return (
-      <>
-        <LinearProgress />
-        <h2>Please wait...</h2>
-      </>
-    );
-
+  const defaultValues = [{ firstName: '', lastName: '', email: '', age: '' }];
 
   return (
     <Box>
       <Header>Employees contacts</Header>
       <ModalWindow
         isOpen={isOpen}
-        onFormSubmit={onFormSubmit}
-        isLoading={isLoading}
         handleCancel={handleCancel}
+        onAddFormSubmit={onAddFormSubmit}
+        defaultValues={defaultValues}
       />
       <Container>
         {data.map(({ _id, firstName, lastName, email, age }) => (
           <EmployeeCard
+            data={data}
             key={_id}
             id={_id}
             firstName={firstName}
             lastName={lastName}
             email={email}
             age={age}
-            handleOpen={handleOpen}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
+            handleOpen={handleOpen}
             handleCancel={handleCancel}
+            isEmployeeDeleting={isEmployeeDeleting}
+            editEmployeeMutation={editEmployeeMutation}
+            deleteEmployeeMutation={deleteEmployeeMutation}
+            isEmployeeAdding={isEmployeeAdding}
+            onAddFormSubmit={onAddFormSubmit}
           />
         ))}
       </Container>
       <ButtonContainer>
-        <Button onClick={handleOpen} isOpen={isOpen}
+        <Button onClick={handleOpen}
         >+ Add new employee</Button>
       </ButtonContainer>
     </Box>

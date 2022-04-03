@@ -16,7 +16,6 @@ function ProfileContainer() {
     return (
       <>
         <LinearProgress />
-        <h2>Please wait...</h2>
       </>
     );
   if (isError) return <h2>{error.message}</h2>;
