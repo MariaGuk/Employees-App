@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
 
-import { ROUTES } from "../../constants/routes";
+import { ROUTES } from "constants/routes";
+
 import { StyledNav, useStyles, Box } from "./styled";
 
 const Layout = ({ children }) => {

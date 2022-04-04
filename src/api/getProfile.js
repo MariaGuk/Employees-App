@@ -1,8 +1,13 @@
 import axios from 'axios';
+import { useQuery } from "react-query";
 
 const getProfile = async () => {
   const { data } = await axios.get('https://api-for-masha.herokuapp.com/api/profile');
-  return data
+  return data;
 };
 
-export { getProfile }
+const useGetProfile = () => {
+  return useQuery('getProfile', getProfile);
+};
+
+export { useGetProfile };

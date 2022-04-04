@@ -1,38 +1,69 @@
 import React, { useState } from "react";
-import { useQuery, useMutation } from "react-query";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
-import { getEmployees, getEmployee } from "../../api/getEmployees";
-import { addNewEmployee } from '../../api/addNewEmployee';
-import { deleteEmployee } from '../../api/deleteEmployee';
-import { editEmployee } from '../../api/editEmployee';
+import { useGetEmployees, useGetEmployee } from "api/getEmployees";
+import { useAddNewEmployee } from 'api/addNewEmployee';
+import { useDeleteEmployee } from 'api/deleteEmployee';
+import { useEditEmployee } from 'api/editEmployee';
+import { client } from 'App';
 
 import Employees from "./Employees";
 
 const EmployeesContainer = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeEmployeeId, setActiveEmployeeId] = useState(null);
 
-  const { data, isLoading: isEmployeesGetting, isError, error } = useQuery("employees", getEmployees);
+  const { data, isLoading: isEmployeesGetting, isError, error } = useGetEmployees();
 
-  const handleOpen = () => setIsOpen(true);
+  const getActiveEmployee = () => data?.find(({ id }) => id === activeEmployeeId);
 
-  const handleCancel = () => setIsOpen(false);
+  const currentEmployee = data?.find(employee => employee._id === activeEmployeeId);
+
+  console.log(activeEmployeeId, 'activeID');
+
+  const handleOpen = (employeeId) => {
+    getActiveEmployee();
+    setIsOpen(true);
+    setActiveEmployeeId(employeeId);
+  };
+
+  const handleCancel = () => {
+    setIsOpen(false);
+    setActiveEmployeeId(null);
+  }
 
   //DELETING 
-  const { mutateAsync: deleteEmployeeMutation, isLoading: isEmployeeDeleting } = useMutation(deleteEmployee,);
+  const { mutateAsync: deleteEmployeeMutation, isLoading: isEmployeeDeleting, isError: isEmployeeDeletingError } = useDeleteEmployee();
+
+  const handleDeleteEmployee = async (id) => {
+    await deleteEmployeeMutation(id);
+    client.invalidateQueries('employees');
+  };
 
   //ADDING
-  const { mutateAsync: addEmployeeMutation, isLoading: isEmployeeAdding, } = useMutation(addNewEmployee);
+  const { mutateAsync: addEmployeeMutation, isLoading: isEmployeeAdding, } = useAddNewEmployee();
+
+  const onAddFormSubmit = async (formData) => {
+    await addEmployeeMutation({ ...formData, });
+    setIsOpen(false);
+    client.invalidateQueries('employees');
+  };
 
   // EDITING
-  // const { isLoading: isEmployeeGetting, } = useQuery(['employee', { activeEmployeeId }], getEmployee(activeEmployeeId));
+  // const { isLoading: isEmployeeGetting, } = useGetEmployee(activeEmployeeId);
 
-  const { mutateAsync: editEmployeeMutation, isLoading: isEmployeeEditing, } = useMutation(editEmployee);
+  const { mutateAsync: editEmployeeMutation, isLoading: isEmployeeEditing } = useEditEmployee();
 
-  if (isEmployeesGetting)
+  const onEditFormSubmit = async (data) => {
+    await editEmployeeMutation({ ...data, activeEmployeeId });
+    setIsOpen(false);
+    client.invalidateQueries('employees');
+  };
+
+  if (isEmployeesGetting) {
     return <LinearProgress />
-
-  if (isError) return <h2>{error.message}</h2>;
+  }
+  if (isError) { return <h2>{error.message}</h2> }
 
   return (
     <Employees
@@ -41,12 +72,14 @@ const EmployeesContainer = () => {
       setIsOpen={setIsOpen}
       handleOpen={handleOpen}
       handleCancel={handleCancel}
-      addEmployeeMutation={addEmployeeMutation}
-      editEmployeeMutation={editEmployeeMutation}
-      deleteEmployeeMutation={deleteEmployeeMutation}
       isEmployeeAdding={isEmployeeAdding}
       isEmployeeEditing={isEmployeeEditing}
       isEmployeeDeleting={isEmployeeDeleting}
+      onAddFormSubmit={onAddFormSubmit}
+      onEditFormSubmit={onEditFormSubmit}
+      handleDeleteEmployee={handleDeleteEmployee}
+      currentEmployee={currentEmployee}
+      activeEmployeeId={activeEmployeeId}
     />
   );
 };

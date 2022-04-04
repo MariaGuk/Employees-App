@@ -1,22 +1,16 @@
 import React from "react";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import { useQuery } from "react-query";
 
-import { getProfile } from "../../api/getProfile";
+import { useGetProfile } from "api/getProfile";
 
 import Profile from "./Profile";
 
 function ProfileContainer() {
-  const { data, isLoading, isError, isSuccess, error } = useQuery(
-    "profile",
-    getProfile
-  );
+  const { data, isLoading, isError, isSuccess, error } = useGetProfile();
 
   if (isLoading)
     return (
-      <>
-        <LinearProgress />
-      </>
+      <LinearProgress />
     );
   if (isError) return <h2>{error.message}</h2>;
 

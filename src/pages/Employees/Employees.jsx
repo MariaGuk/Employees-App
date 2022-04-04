@@ -1,6 +1,9 @@
 import React from "react";
 import Button from "@mui/material/Button";
 
+import ModalWindow from "components/ModalWindow/ModalWindow";
+import EmployeeCard from "components/Card/EmployeeCard";
+
 import {
   Box,
   Header,
@@ -8,20 +11,7 @@ import {
   ButtonContainer,
 } from "./styled";
 
-import { client } from '../../App';
-
-import EmployeeCard from "./EmployeeCard";
-import ModalWindow from "../../components/ModalWindow/ModalWindow";
-
-const Employees = ({ data, isOpen, setIsOpen, handleCancel, isLoading, handleOpen, isEmployeeDeleting, addEmployeeMutation, editEmployeeMutation, deleteEmployeeMutation, isEmployeeAdding }) => {
-
-  const onAddFormSubmit = async (formData) => {
-    await addEmployeeMutation({ ...formData });
-    setIsOpen(false);
-    client.invalidateQueries('employees');
-  };
-
-  const defaultValues = [{ firstName: '', lastName: '', email: '', age: '' }];
+const Employees = ({ data, isOpen, setIsOpen, handleCancel, handleOpen, isEmployeeDeleting, isEmployeeAdding, isEmployeeEditing, onAddFormSubmit, onEditFormSubmit, handleDeleteEmployee, currentEmployee, activeEmployeeId }) => {
 
   return (
     <Box>
@@ -30,7 +20,7 @@ const Employees = ({ data, isOpen, setIsOpen, handleCancel, isLoading, handleOpe
         isOpen={isOpen}
         handleCancel={handleCancel}
         onAddFormSubmit={onAddFormSubmit}
-        defaultValues={defaultValues}
+        isEmployeeAdding={isEmployeeAdding}
       />
       <Container>
         {data.map(({ _id, firstName, lastName, email, age }) => (
@@ -47,10 +37,12 @@ const Employees = ({ data, isOpen, setIsOpen, handleCancel, isLoading, handleOpe
             handleOpen={handleOpen}
             handleCancel={handleCancel}
             isEmployeeDeleting={isEmployeeDeleting}
-            editEmployeeMutation={editEmployeeMutation}
-            deleteEmployeeMutation={deleteEmployeeMutation}
-            isEmployeeAdding={isEmployeeAdding}
             onAddFormSubmit={onAddFormSubmit}
+            onEditFormSubmit={onEditFormSubmit}
+            handleDeleteEmployee={handleDeleteEmployee}
+            isEmployeeEditing={isEmployeeEditing}
+            currentEmployee={currentEmployee}
+            activeEmployeeId={activeEmployeeId}
           />
         ))}
       </Container>

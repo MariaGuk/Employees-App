@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { useQuery } from "react-query";
+import { client } from 'App';
 
 const getEmployees = async () => {
   const { data } = await axios.get('https://api-for-masha.herokuapp.com/api/employees');
@@ -6,12 +8,28 @@ const getEmployees = async () => {
   return data;
 };
 
-const getEmployee = async ({ queryKey }) => {
-  // eslint-disable-next-line no-unused-vars
-  const [_key, { employeeId }] = queryKey;
-  const { data } = await axios.get(`https://api-for-masha.herokuapp.com/api/employees/${employeeId}`);
-
-  return data
+const useGetEmployees = () => {
+  return useQuery("employees", getEmployees)
 };
 
-export { getEmployees, getEmployee };
+const getEmployee = async (employeeId) => {
+  const { data } = await axios.get(`https://api-for-masha.herokuapp.com/api/employees/${employeeId.activeEmployeeId}`);
+
+  return data;
+};
+
+const useGetEmployee = (employeeId) => {
+  return useQuery(['employee', { employeeId }], getEmployee, {
+    initialData: () => {
+      const employee = client.getQueryData('employee')?.data?.find((employee) => employee.id === employeeId)
+
+      if (employee) {
+        return { data: employee }
+      } else {
+        return undefined;
+      }
+    }
+  })
+};
+
+export { useGetEmployees, useGetEmployee };
