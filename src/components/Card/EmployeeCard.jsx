@@ -12,10 +12,10 @@ import {
   CardContent,
 } from "../../pages/Employees/styled";
 
-const EmployeeCard = ({id, firstName, lastName, email, age, handleOpen, isOpen, handleCancel, isEmployeeDeleting, onAddFormSubmit, onEditFormSubmit, handleDeleteEmployee, isEmployeeEditing, currentEmployee, activeEmployeeId }) => {
+const EmployeeCard = ({ id, firstName, lastName, email, age, handleOpen, isOpen, handleCancel, isEmployeeDeleting, onAddFormSubmit, onEditFormSubmit, handleDeleteEmployee, isEmployeeEditing, currentEmployee }) => {
 
   return (
-    <StyledCard key={id}>
+    <StyledCard>
       <ModalWindow
         isOpen={isOpen}
         defaultValues={currentEmployee}
@@ -23,7 +23,7 @@ const EmployeeCard = ({id, firstName, lastName, email, age, handleOpen, isOpen, 
         onEditFormSubmit={onEditFormSubmit}
         handleCancel={handleCancel}
         isLoading={isEmployeeEditing}
-        activeEmployeeId={activeEmployeeId} />
+        />
       <CardActions>
         <Button >
           <EditIcon onClick={() => handleOpen(id)} />

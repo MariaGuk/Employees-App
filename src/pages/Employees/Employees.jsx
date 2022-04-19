@@ -11,7 +11,7 @@ import {
   ButtonContainer,
 } from "./styled";
 
-const Employees = ({ data, isOpen, setIsOpen, handleCancel, handleOpen, isEmployeeDeleting, isEmployeeAdding, isEmployeeEditing, onAddFormSubmit, onEditFormSubmit, handleDeleteEmployee, currentEmployee, activeEmployeeId }) => {
+const Employees = ({ data, isOpen, setIsOpen, handleCancel, handleOpen, isEmployeeDeleting, isEmployeeAdding, isEmployeeEditing, onAddFormSubmit, onEditFormSubmit, handleDeleteEmployee, currentEmployee}) => {
 
   return (
     <Box>
@@ -42,13 +42,13 @@ const Employees = ({ data, isOpen, setIsOpen, handleCancel, handleOpen, isEmploy
             handleDeleteEmployee={handleDeleteEmployee}
             isEmployeeEditing={isEmployeeEditing}
             currentEmployee={currentEmployee}
-            activeEmployeeId={activeEmployeeId}
           />
         ))}
       </Container>
       <ButtonContainer>
-        <Button onClick={handleOpen}
-        >+ Add new employee</Button>
+        <Button onClick={handleOpen} >
+          + Add new employee
+        </Button>
       </ButtonContainer>
     </Box>
   );

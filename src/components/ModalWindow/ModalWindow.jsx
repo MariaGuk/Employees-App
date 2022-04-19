@@ -22,18 +22,21 @@ const ModalWindow = ({
   defaultValues,
   onAddFormSubmit,
   onEditFormSubmit,
-  activeEmployeeId
 }) => {
   const formik = useFormik({
-    initialValues: { defaultValues },
+    enableReinitialize: true,
+    initialValues: defaultValues || {},
     onSubmit: (data, onSubmitProps,) => {
-      onAddFormSubmit(data);
+      if (defaultValues) {
+        onEditFormSubmit(data);
+      }
+      else {
+        onAddFormSubmit(data)
+      }
       onSubmitProps.resetForm();
     },
     validationSchema: formValidation,
   });
-
-  // console.log(formik.values, 'default');
 
   return (
     <Modal
@@ -94,11 +97,9 @@ const ModalWindow = ({
                 helperText={formik.touched.age && formik.errors.age}
               />
               <ButtonsContainer>
-                <StyledButton type="submit" disabled={!(formik.dirty && formik.isValid)} >
-                  {isLoading ? <Loader type="ThreeDots" color="#1976D2" height={4} /> : "Add"}
+                <StyledButton type="submit" disabled={!(formik.dirty && formik.isValid)}  >
+                  {isLoading ? <Loader type="ThreeDots" color="#1976D2" height={2} /> : "Save"}
                 </StyledButton>
-                <StyledButton type="submit" onClick={() => onEditFormSubmit(activeEmployeeId)}>
-                  {isLoading ? <Loader type="ThreeDots" color="#1976D2" height={4} /> : "Edit"}</StyledButton>
                 <StyledButton type="button" onClick={handleCancel}>
                   Cancel
                 </StyledButton>

@@ -47,7 +47,7 @@ const CardContent = styled('div')({
 const ButtonContainer = styled('div')({
   display: 'flex',
   justifyContent: 'center',
-  marginTop: '120px'
+  marginTop: '100px'
 });
 
 export { Box, Header, StyledCard, CardActions, CardContent, Container, ButtonContainer };

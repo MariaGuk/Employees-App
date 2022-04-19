@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
-import { useGetEmployees, useGetEmployee } from "api/getEmployees";
+import { useGetEmployees } from "api/getEmployees";
 import { useAddNewEmployee } from 'api/addNewEmployee';
 import { useDeleteEmployee } from 'api/deleteEmployee';
 import { useEditEmployee } from 'api/editEmployee';
@@ -19,8 +19,6 @@ const EmployeesContainer = () => {
 
   const currentEmployee = data?.find(employee => employee._id === activeEmployeeId);
 
-  console.log(activeEmployeeId, 'activeID');
-
   const handleOpen = (employeeId) => {
     getActiveEmployee();
     setIsOpen(true);
@@ -33,7 +31,7 @@ const EmployeesContainer = () => {
   }
 
   //DELETING 
-  const { mutateAsync: deleteEmployeeMutation, isLoading: isEmployeeDeleting, isError: isEmployeeDeletingError } = useDeleteEmployee();
+  const { mutateAsync: deleteEmployeeMutation, isLoading: isEmployeeDeleting, isError: isDeletingError, error: errorDelete } = useDeleteEmployee();
 
   const handleDeleteEmployee = async (id) => {
     await deleteEmployeeMutation(id);
@@ -41,18 +39,16 @@ const EmployeesContainer = () => {
   };
 
   //ADDING
-  const { mutateAsync: addEmployeeMutation, isLoading: isEmployeeAdding, } = useAddNewEmployee();
+  const { mutateAsync: addEmployeeMutation, isLoading: isEmployeeAdding, isError: isAddingError, error: errorAdd } = useAddNewEmployee();
 
   const onAddFormSubmit = async (formData) => {
-    await addEmployeeMutation({ ...formData, });
+    await addEmployeeMutation({ ...formData });
     setIsOpen(false);
     client.invalidateQueries('employees');
   };
 
   // EDITING
-  // const { isLoading: isEmployeeGetting, } = useGetEmployee(activeEmployeeId);
-
-  const { mutateAsync: editEmployeeMutation, isLoading: isEmployeeEditing } = useEditEmployee();
+  const { mutateAsync: editEmployeeMutation, isLoading: isEmployeeEditing, isError: isEditingError, error: errorEdit } = useEditEmployee();
 
   const onEditFormSubmit = async (data) => {
     await editEmployeeMutation({ ...data, activeEmployeeId });
@@ -62,8 +58,11 @@ const EmployeesContainer = () => {
 
   if (isEmployeesGetting) {
     return <LinearProgress />
-  }
-  if (isError) { return <h2>{error.message}</h2> }
+  };
+
+  if (isError || isDeletingError || isEditingError || isAddingError) {
+    return <h2>{error.message}||{errorDelete.message}||{errorEdit.message}||{errorAdd.message}</h2>
+  };
 
   return (
     <Employees
@@ -79,7 +78,6 @@ const EmployeesContainer = () => {
       onEditFormSubmit={onEditFormSubmit}
       handleDeleteEmployee={handleDeleteEmployee}
       currentEmployee={currentEmployee}
-      activeEmployeeId={activeEmployeeId}
     />
   );
 };
