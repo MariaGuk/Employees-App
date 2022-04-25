@@ -1,1 +1,1 @@
-export { default } from './EmployeesContainer'
+export { default } from './EmployeesContainer.jsx'

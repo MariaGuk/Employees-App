@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { Link } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
 
 const StyledNav = styled('nav')({
   display: 'flex',
@@ -12,16 +11,14 @@ const Box = styled('div')({
   backgroundColor: '#807A88'
 });
 
-const useStyles = makeStyles({
-  link: {
-    color: 'white',
-    textDecoration: 'none',
-    marginRight: '60px',
-    fontSize: '16px',
-    fontFamily: 'sans-serif',
-    textTransform: 'uppercase',
-    letterSpacing: '1.2px'
-  },
+const StyledLink = styled(Link)({
+  color: 'white',
+  textDecoration: 'none',
+  marginRight: '60px',
+  fontSize: '16px',
+  fontFamily: 'sans-serif',
+  textTransform: 'uppercase',
+  letterSpacing: '1.2px'
 });
 
-export { StyledNav, Box, useStyles };
+export { StyledNav, Box, StyledLink };

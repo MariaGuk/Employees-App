@@ -5,7 +5,6 @@ import { useGetEmployees } from "api/getEmployees";
 import { useAddNewEmployee } from 'api/addNewEmployee';
 import { useDeleteEmployee } from 'api/deleteEmployee';
 import { useEditEmployee } from 'api/editEmployee';
-import { client } from 'App';
 
 import Employees from "./Employees";
 
@@ -13,11 +12,11 @@ const EmployeesContainer = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeEmployeeId, setActiveEmployeeId] = useState(null);
 
-  const { data, isLoading: isEmployeesGetting, isError, error } = useGetEmployees();
+  const { data: employeesProfiles, isLoading: isEmployeesGetting, } = useGetEmployees();
 
-  const getActiveEmployee = () => data?.find(({ id }) => id === activeEmployeeId);
+  const getActiveEmployee = () => employeesProfiles?.find(({ id }) => id === activeEmployeeId);
 
-  const currentEmployee = data?.find(employee => employee._id === activeEmployeeId);
+  const currentEmployee = employeesProfiles?.find(employee => employee._id === activeEmployeeId);
 
   const handleOpen = (employeeId) => {
     getActiveEmployee();
@@ -31,11 +30,10 @@ const EmployeesContainer = () => {
   }
 
   //DELETING 
-  const { mutateAsync: deleteEmployeeMutation, isLoading: isEmployeeDeleting, isError: isDeletingError, error: errorDelete } = useDeleteEmployee();
+  const { mutateAsync: deleteEmployeeMutation, isLoading: isEmployeeDeleting, } = useDeleteEmployee();
 
   const handleDeleteEmployee = async (id) => {
     await deleteEmployeeMutation(id);
-    client.invalidateQueries('employees');
   };
 
   //ADDING
@@ -44,41 +42,37 @@ const EmployeesContainer = () => {
   const onAddFormSubmit = async (formData) => {
     await addEmployeeMutation({ ...formData });
     setIsOpen(false);
-    client.invalidateQueries('employees');
   };
 
   // EDITING
   const { mutateAsync: editEmployeeMutation, isLoading: isEmployeeEditing, isError: isEditingError, error: errorEdit } = useEditEmployee();
 
-  const onEditFormSubmit = async (data) => {
-    await editEmployeeMutation({ ...data, activeEmployeeId });
+  const onEditFormSubmit = async (employeeFormData) => {
+    await editEmployeeMutation({ ...employeeFormData, activeEmployeeId });
     setIsOpen(false);
-    client.invalidateQueries('employees');
-  };
-
-  if (isEmployeesGetting) {
-    return <LinearProgress />
-  };
-
-  if (isError || isDeletingError || isEditingError || isAddingError) {
-    return <h2>{error.message}||{errorDelete.message}||{errorEdit.message}||{errorAdd.message}</h2>
   };
 
   return (
-    <Employees
-      data={data}
-      isOpen={isOpen}
-      setIsOpen={setIsOpen}
-      handleOpen={handleOpen}
-      handleCancel={handleCancel}
-      isEmployeeAdding={isEmployeeAdding}
-      isEmployeeEditing={isEmployeeEditing}
-      isEmployeeDeleting={isEmployeeDeleting}
-      onAddFormSubmit={onAddFormSubmit}
-      onEditFormSubmit={onEditFormSubmit}
-      handleDeleteEmployee={handleDeleteEmployee}
-      currentEmployee={currentEmployee}
-    />
+    <>
+      {isEmployeesGetting ?
+        <LinearProgress /> :
+        isEditingError || isAddingError ?
+          <h2>{errorEdit.message}</h2> || <h2>{errorAdd.message}</h2> :
+          <Employees
+            employeesProfiles={employeesProfiles}
+            isOpen={isOpen}
+            handleOpen={handleOpen}
+            handleCancel={handleCancel}
+            isEmployeeAdding={isEmployeeAdding}
+            isEmployeeEditing={isEmployeeEditing}
+            isEmployeeDeleting={isEmployeeDeleting}
+            onAddFormSubmit={onAddFormSubmit}
+            onEditFormSubmit={onEditFormSubmit}
+            handleDeleteEmployee={handleDeleteEmployee}
+            currentEmployee={currentEmployee}
+          />
+      }
+    </>
   );
 };
 

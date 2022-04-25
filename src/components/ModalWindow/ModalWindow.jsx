@@ -26,12 +26,12 @@ const ModalWindow = ({
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: defaultValues || {},
-    onSubmit: (data, onSubmitProps,) => {
+    onSubmit: (employeeFormData, onSubmitProps,) => {
       if (defaultValues) {
-        onEditFormSubmit(data);
+        onEditFormSubmit(employeeFormData);
       }
       else {
-        onAddFormSubmit(data)
+        onAddFormSubmit(employeeFormData)
       }
       onSubmitProps.resetForm();
     },

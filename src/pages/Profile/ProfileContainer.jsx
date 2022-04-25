@@ -6,15 +6,16 @@ import { useGetProfile } from "api/getProfile";
 import Profile from "./Profile";
 
 function ProfileContainer() {
-  const { data, isLoading, isError, isSuccess, error } = useGetProfile();
+  const { data: employeeProfile, isLoading: isEmployeeLoading } = useGetProfile();
 
-  if (isLoading)
-    return (
-      <LinearProgress />
-    );
-  if (isError) return <h2>{error.message}</h2>;
-
-  return <Profile data={data} isSuccess={isSuccess} />;
+  return (
+    <>
+      {isEmployeeLoading ?
+        <LinearProgress /> :
+        <Profile employeeProfile={employeeProfile} />
+      }
+    </>
+  )
 }
 
 export default ProfileContainer;
