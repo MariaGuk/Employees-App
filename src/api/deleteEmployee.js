@@ -10,8 +10,11 @@ const deleteEmployee = async (employeeId) => {
 };
 
 const useDeleteEmployee = () => {
-  client.invalidateQueries('employees');
-  return useMutation(deleteEmployee);
+  return useMutation(deleteEmployee, {
+    onSuccess: () => {
+      client.invalidateQueries('employees');
+    }
+  });
 };
 
 export { useDeleteEmployee }

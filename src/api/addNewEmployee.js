@@ -9,8 +9,11 @@ const addNewEmployee = async ({ ...employee }) => {
 };
 
 const useAddNewEmployee = () => {
-  client.invalidateQueries('employees');
-  return useMutation(addNewEmployee)
+  return useMutation(addNewEmployee, {
+    onSuccess: () => {
+      client.invalidateQueries('employees');
+    }
+  })
 };
 
 export { useAddNewEmployee } 

@@ -2,15 +2,18 @@ import axios from 'axios';
 import { useMutation } from "react-query";
 import { client } from "App"
 
-const editEmployee = async ({ ...data }) => {
-  const response = await axios.put(`https://api-for-masha.herokuapp.com/api/employees/${data.activeEmployeeId}`, data);
+const editEmployee = async ({ ...employeeFormData }) => {
+  const { data } = await axios.put(`https://api-for-masha.herokuapp.com/api/employees/${employeeFormData.activeEmployeeId}`, employeeFormData);
 
-  return response.data;
+  return data;
 };
 
 const useEditEmployee = () => {
-  client.invalidateQueries('employees');
-  return useMutation(editEmployee);
+  return useMutation(editEmployee, {
+    onSuccess: () => {
+      client.invalidateQueries('employees');
+    }
+  })
 };
 
 export { useEditEmployee };
