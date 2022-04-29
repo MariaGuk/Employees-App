@@ -1,77 +1,54 @@
-import React, { useState } from "react";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import React from 'react';
 
-import { useGetEmployees } from "api/getEmployees";
+import { useGetEmployees } from 'api/getEmployees';
 import { useAddNewEmployee } from 'api/addNewEmployee';
 import { useDeleteEmployee } from 'api/deleteEmployee';
-import { useEditEmployee } from 'api/editEmployee';
 
-import Employees from "./Employees";
+import Employees from './Employees';
+import { useFormik } from 'formik';
+import { formValidation } from '../../validation/validation';
+
+const defaultValues = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  age: 0,
+};
 
 const EmployeesContainer = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeEmployeeId, setActiveEmployeeId] = useState(null);
+  const { data: employeesProfiles } = useGetEmployees();
 
-  const { data: employeesProfiles, isLoading: isEmployeesGetting, } = useGetEmployees();
-
-  const getActiveEmployee = () => employeesProfiles?.find(({ id }) => id === activeEmployeeId);
-
-  const currentEmployee = employeesProfiles?.find(employee => employee._id === activeEmployeeId);
-
-  const handleOpen = (employeeId) => {
-    getActiveEmployee();
-    setIsOpen(true);
-    setActiveEmployeeId(employeeId);
-  };
-
-  const handleCancel = () => {
-    setIsOpen(false);
-    setActiveEmployeeId(null);
-  }
-
-  //DELETING 
-  const { mutateAsync: deleteEmployeeMutation, isLoading: isEmployeeDeleting, } = useDeleteEmployee();
+  //DELETING
+  const { mutateAsync: deleteEmployeeMutation } = useDeleteEmployee();
 
   const handleDeleteEmployee = async (id) => {
     await deleteEmployeeMutation(id);
   };
 
   //ADDING
-  const { mutateAsync: addEmployeeMutation, isLoading: isEmployeeAdding, isError: isAddingError, error: errorAdd } = useAddNewEmployee();
+  const { mutate: addEmployeeMutation } = useAddNewEmployee();
 
-  const onAddFormSubmit = async (formData) => {
-    await addEmployeeMutation({ ...formData });
-    setIsOpen(false);
-  };
-
-  // EDITING
-  const { mutateAsync: editEmployeeMutation, isLoading: isEmployeeEditing, isError: isEditingError, error: errorEdit } = useEditEmployee();
-
-  const onEditFormSubmit = async (employeeFormData) => {
-    await editEmployeeMutation({ ...employeeFormData, activeEmployeeId });
-    setIsOpen(false);
-  };
+  const formik = useFormik({
+    initialValues: defaultValues,
+    onSubmit: (employeeFormData, onSubmitProps) => {
+      addEmployeeMutation({ ...employeeFormData });
+      onSubmitProps.resetForm();
+    },
+    validationSchema: formValidation,
+  });
 
   return (
     <>
-      {isEmployeesGetting ?
-        <LinearProgress /> :
-        isEditingError || isAddingError ?
-          <h2>{errorEdit.message}</h2> || <h2>{errorAdd.message}</h2> :
-          <Employees
-            employeesProfiles={employeesProfiles}
-            isOpen={isOpen}
-            handleOpen={handleOpen}
-            handleCancel={handleCancel}
-            isEmployeeAdding={isEmployeeAdding}
-            isEmployeeEditing={isEmployeeEditing}
-            isEmployeeDeleting={isEmployeeDeleting}
-            onAddFormSubmit={onAddFormSubmit}
-            onEditFormSubmit={onEditFormSubmit}
-            handleDeleteEmployee={handleDeleteEmployee}
-            currentEmployee={currentEmployee}
-          />
-      }
+      {employeesProfiles && (
+        <Employees
+          values={formik.values}
+          employeesProfiles={employeesProfiles}
+          onAddFormSubmit={addEmployeeMutation}
+          handleDeleteEmployee={handleDeleteEmployee}
+          handleChange={formik.handleChange}
+          handleSubmit={formik.handleSubmit}
+        />
+      )}
     </>
   );
 };
