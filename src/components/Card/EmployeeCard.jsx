@@ -3,9 +3,6 @@ import Typography from "@mui/material/Typography";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
-import Loader from "react-loader-spinner";
-
-import ModalWindow from "components/ModalWindow";
 
 import {
   StyledCard,
@@ -13,28 +10,43 @@ import {
   CardContent,
 } from "pages/Employees/styled";
 
-const EmployeeCard = (props) => (
+import ModalWindow from "components/ModalWindow";
+
+const EmployeeCard = ({
+  id,
+  firstName,
+  lastName,
+  email,
+  age,
+  values,
+  isOpen,
+  setIsOpen,
+  handleChange,
+  handleSubmit,
+  handleDeleteEmployee,
+  handleCancel
+}) => (
   <StyledCard>
     <ModalWindow
-      isOpen={props.isOpen}
-      defaultValues={props.currentEmployee}
-      onAddFormSubmit={props.onAddFormSubmit}
-      onEditFormSubmit={props.onEditFormSubmit}
-      handleCancel={props.handleCancel}
-      isLoading={props.isEmployeeEditing}
+      isOpen={isOpen}
+      defaultValues={values}
+      handleSubmit={handleSubmit}
+      handleChange={handleChange}
+      handleCancel={handleCancel}
     />
     <CardActions>
       <Button >
-        <EditIcon onClick={() => props.handleOpen(props.id)} />
+        <EditIcon onClick={() => setIsOpen(true)} />
       </Button>
-      <Button onClick={() => props.handleDeleteEmployee(props.id)}  > {props.isEmployeeDeleting ? <Loader type="ThreeDots" color="#1976D2" height={4} /> : <DeleteIcon />}
+      <Button onClick={() => handleDeleteEmployee(id)}>
+        <DeleteIcon />
       </Button>
     </CardActions>
     <CardContent>
-      <Typography>First Name: {props.firstName}</Typography>
-      <Typography>Last Name: {props.lastName}</Typography>
-      <Typography>Email: {props.email}</Typography>
-      <Typography>Age: {props.age}</Typography>
+      <Typography>First Name: {firstName}</Typography>
+      <Typography>Last Name: {lastName}</Typography>
+      <Typography>Email: {email}</Typography>
+      <Typography>Age: {age}</Typography>
     </CardContent>
   </StyledCard>
 );

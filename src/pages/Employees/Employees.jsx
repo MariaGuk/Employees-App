@@ -1,9 +1,6 @@
 import React from "react";
 import Button from "@mui/material/Button";
 
-import ModalWindow from "components/ModalWindow";
-import EmployeeCard from "components/Card/EmployeeCard";
-
 import {
   Box,
   Header,
@@ -11,43 +8,44 @@ import {
   ButtonContainer,
 } from "./styled";
 
-const Employees = (props) => (
+import ModalWindow from "components/ModalWindow";
+import EmployeeCardContainer from "components/Card/EmployeeCardContainer";
+
+const Employees = ({
+  employeesProfiles,
+  values,
+  handleChange,
+  handleSubmit,
+  isOpen,
+  setIsOpen,
+  handleCancel,
+}) => (
   <Box>
     <Header>Employees contacts</Header>
     <ModalWindow
-      isOpen={props.isOpen}
-      handleCancel={props.handleCancel}
-      onAddFormSubmit={props.onAddFormSubmit}
-      isEmployeeAdding={props.isEmployeeAdding}
+      defaultValues={values}
+      isOpen={isOpen}
+      handleCancel={handleCancel}
+      handleChange={handleChange}
+      handleSubmit={handleSubmit}
     />
     <Container>
-      {props.employeesProfiles.map(({ _id, firstName, lastName, email, age }) => (
-        <EmployeeCard
-          employeesProfiles={props.employeesProfiles}
+      {employeesProfiles.map(({ _id, firstName, lastName, email, age }) => (
+        <EmployeeCardContainer
           key={_id}
           id={_id}
           firstName={firstName}
           lastName={lastName}
           email={email}
           age={age}
-          isOpen={props.isOpen}
-          handleOpen={props.handleOpen}
-          handleCancel={props.handleCancel}
-          isEmployeeDeleting={props.isEmployeeDeleting}
-          onAddFormSubmit={props.onAddFormSubmit}
-          onEditFormSubmit={props.onEditFormSubmit}
-          handleDeleteEmployee={props.handleDeleteEmployee}
-          isEmployeeEditing={props.isEmployeeEditing}
-          currentEmployee={props.currentEmployee}
         />
       ))}
     </Container>
     <ButtonContainer>
-      <Button onClick={props.handleOpen} >
+      <Button onClick={() => setIsOpen(true)} >
         + Add new employee
       </Button>
     </ButtonContainer>
-  </Box>
-);
+  </Box>);
 
 export default Employees;
