@@ -1,12 +1,8 @@
 import React from "react";
 import Modal from "@mui/material/Modal";
-import Loader from "react-loader-spinner";
 import TextField from "@mui/material/TextField";
-import { useFormik } from "formik";
 
 import { noDigits } from "utils/noDigits";
-import { formValidation } from "validation/validation";
-
 import {
   StyledButton,
   StyledBox,
@@ -17,24 +13,11 @@ import {
 
 const ModalWindow = ({
   isOpen,
-  isLoading,
   handleCancel,
   defaultValues,
-  onAddFormSubmit,
-  onEditFormSubmit,
-  activeEmployeeId
+  handleChange,
+  handleSubmit,
 }) => {
-  const formik = useFormik({
-    initialValues: { defaultValues },
-    onSubmit: (data, onSubmitProps,) => {
-      onAddFormSubmit(data);
-      onSubmitProps.resetForm();
-    },
-    validationSchema: formValidation,
-  });
-
-  // console.log(formik.values, 'default');
-
   return (
     <Modal
       open={isOpen}
@@ -45,60 +28,53 @@ const ModalWindow = ({
       <StyledBox>
         <h2>Employee</h2>
         <Container>
-          <form onSubmit={formik.handleSubmit} >
+          <form onSubmit={handleSubmit} >
             <TextFieldsContainer >
               <TextField
+                id='firstName'
                 type="text"
                 label="First Name"
                 name="firstName"
                 variant="outlined"
-                defaultValue={defaultValues?.firstName}
-                {...formik.getFieldProps('firstName')}
-                error={
-                  formik.touched.firstName && Boolean(formik.errors.firstName)
-                }
-                helperText={formik.touched.firstName && formik.errors.firstName}
+                defaultValue=''
+                value={defaultValues?.firstName}
+                onChange={handleChange}
                 onKeyPress={(event) => noDigits(event)}
               />
               <TextField
+                id='lastName'
                 type="text"
                 label="Last Name"
                 name="lastName"
                 variant="outlined"
-                defaultValue={defaultValues?.lastName}
-                {...formik.getFieldProps('lastName')}
-                error={
-                  formik.touched.lastName && Boolean(formik.errors.lastName)
-                }
-                helperText={formik.touched.lastName && formik.errors.lastName}
-                onKeyPress={(event) => noDigits(event)}
+                defaultValue=''
+                value={defaultValues?.lastName}
+                onChange={handleChange}
               />
               <TextField
+                id='email'
                 type="email"
                 label="Email"
                 name="email"
                 variant="outlined"
-                defaultValue={defaultValues?.email}
-                {...formik.getFieldProps('email')}
-                error={formik.touched.email && Boolean(formik.errors.email)}
-                helperText={formik.touched.email && formik.errors.email}
+                defaultValue=''
+                value={defaultValues?.email}
+                onChange={handleChange}
               />
               <TextField
+                id='age'
                 type="number"
                 label="Age"
                 name="age"
                 variant="outlined"
-                defaultValue={defaultValues?.age}
-                {...formik.getFieldProps('age')}
-                error={formik.touched.age && Boolean(formik.errors.age)}
-                helperText={formik.touched.age && formik.errors.age}
+                defaultValue=''
+                value={defaultValues?.age}
+                onChange={handleChange}
               />
               <ButtonsContainer>
-                <StyledButton type="submit" disabled={!(formik.dirty && formik.isValid)} >
-                  {isLoading ? <Loader type="ThreeDots" color="#1976D2" height={4} /> : "Add"}
+                <StyledButton type="submit" >
+                  Save
                 </StyledButton>
-                <StyledButton type="submit" onClick={() => onEditFormSubmit(activeEmployeeId)}>
-                  {isLoading ? <Loader type="ThreeDots" color="#1976D2" height={4} /> : "Edit"}</StyledButton>
                 <StyledButton type="button" onClick={handleCancel}>
                   Cancel
                 </StyledButton>

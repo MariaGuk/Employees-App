@@ -5,8 +5,8 @@ import { Routes, Route } from "react-router-dom";
 
 import { ROUTEPATHS } from "constants/routes";
 import Layout from "components/Layout";
-import EmployeesContainer from "pages/Employees/EmployeesContainer";
-import ProfileContainer from "pages/Profile/ProfileContainer";
+import EmployeesContainer from "pages/Employees";
+import ProfileContainer from "pages/Profile";
 
 const client = new QueryClient();
 
