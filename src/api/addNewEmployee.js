@@ -1,9 +1,12 @@
 import axios from 'axios';
 import { useMutation } from "react-query";
+
 import { client } from 'App';
+import { API, URL } from 'constants/routes';
+import { QUERY_KEYS } from 'constants/queryKeys';
 
 const addNewEmployee = async ({ ...employee }) => {
-  const { data } = await axios.post('https://api-for-masha.herokuapp.com/api/employees', employee);
+  const { data } = await axios.post(`${URL}/${API.getEmployees}`, employee);
 
   return data;
 };
@@ -11,7 +14,7 @@ const addNewEmployee = async ({ ...employee }) => {
 const useAddNewEmployee = () => {
   return useMutation(addNewEmployee, {
     onSuccess: () => {
-      client.invalidateQueries('employees');
+      client.invalidateQueries(QUERY_KEYS.employees);
     }
   })
 };

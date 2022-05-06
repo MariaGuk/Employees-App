@@ -1,10 +1,12 @@
 import axios from 'axios';
 import { useMutation } from "react-query";
-import { client } from 'App';
 
+import { client } from 'App';
+import { API, URL } from 'constants/routes';
+import { QUERY_KEYS } from 'constants/queryKeys';
 
 const deleteEmployee = async (employeeId) => {
-  await axios.delete(`https://api-for-masha.herokuapp.com/api/employees/${employeeId}`);
+  await axios.delete(`${URL}/${API.getEmployees}/${employeeId}`);
 
   return true;
 };
@@ -12,7 +14,7 @@ const deleteEmployee = async (employeeId) => {
 const useDeleteEmployee = () => {
   return useMutation(deleteEmployee, {
     onSuccess: () => {
-      client.invalidateQueries('employees');
+      client.invalidateQueries(QUERY_KEYS.employees);
     }
   });
 };

@@ -4,7 +4,8 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 
 import { useGetEmployees } from "api/getEmployees";
 import { useAddNewEmployee } from 'api/addNewEmployee';
-import { formValidation } from '../../validation/validation';
+import { formValidation } from 'validation/validation';
+
 import Employees from "./Employees";
 
 const defaultValues = {
@@ -17,7 +18,7 @@ const defaultValues = {
 const EmployeesContainer = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: employeesProfiles } = useGetEmployees();
+  const { data: employeesProfiles, isLoading: isEmployeesLoading } = useGetEmployees();
 
   const { mutateAsync: addEmployeeMutation } = useAddNewEmployee();
 
@@ -31,6 +32,10 @@ const EmployeesContainer = () => {
     validationSchema: formValidation,
   });
 
+  const handleOpen = () => {
+    setIsOpen(true);
+  };
+
   const handleCancel = () => {
     formik.setValues({ defaultValues });
     setIsOpen(false);
@@ -38,17 +43,18 @@ const EmployeesContainer = () => {
 
   return (
     <>
-      {employeesProfiles ?
+      {isEmployeesLoading ?
+        < LinearProgress /> :
         <Employees
           employeesProfiles={employeesProfiles}
           values={formik.values}
           handleChange={formik.handleChange}
           handleSubmit={formik.handleSubmit}
           isOpen={isOpen}
-          setIsOpen={setIsOpen}
+          handleOpen={handleOpen}
           handleCancel={handleCancel}
         />
-        : < LinearProgress />
+
       }
     </>
   );

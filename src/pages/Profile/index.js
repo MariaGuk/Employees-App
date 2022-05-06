@@ -1,1 +1,1 @@
-export { default } from './ProfileContainer.jsx'
+export { default } from './ProfileContainer'

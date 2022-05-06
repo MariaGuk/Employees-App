@@ -20,10 +20,10 @@ const EmployeeCard = ({
   age,
   values,
   isOpen,
-  setIsOpen,
   handleChange,
   handleSubmit,
   handleDeleteEmployee,
+  handleOpen,
   handleCancel
 }) => (
   <StyledCard>
@@ -36,7 +36,7 @@ const EmployeeCard = ({
     />
     <CardActions>
       <Button >
-        <EditIcon onClick={() => setIsOpen(true)} />
+        <EditIcon onClick={handleOpen} />
       </Button>
       <Button onClick={() => handleDeleteEmployee(id)}>
         <DeleteIcon />
