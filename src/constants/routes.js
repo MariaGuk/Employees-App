@@ -15,5 +15,11 @@ const ROUTES = [
     path: ROUTEPATHS.profile,
   },
 ];
+const URL = 'https://api-for-masha.herokuapp.com';
 
-export { ROUTEPATHS, ROUTES };
+const API = {
+  getProfile: 'api/profile',
+  getEmployees: 'api/employees',
+};
+
+export { ROUTEPATHS, ROUTES, URL, API };

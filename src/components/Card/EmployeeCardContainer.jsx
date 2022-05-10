@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 
-import { formValidation } from '../../validation/validation';
-import { useEditEmployee } from '../../api/editEmployee';
-import { useDeleteEmployee } from '../../api/deleteEmployee'
+import { formValidation } from 'validation/validation';
+import { useEditEmployee } from 'api/editEmployee';
+import { useDeleteEmployee } from 'api/deleteEmployee'
 
 import EmployeeCard from './EmployeeCard';
 
@@ -19,10 +19,10 @@ const EmployeeCardContainer = ({ firstName, lastName, email, age, id }) => {
 
   const { mutate: editEmployeeMutation } = useEditEmployee();
 
-  const { mutateAsync: deleteEmployeeMutation } = useDeleteEmployee();
+  const { mutate: deleteEmployeeMutation } = useDeleteEmployee();
 
-  const handleDeleteEmployee = async () => {
-    await deleteEmployeeMutation(id);
+  const handleDeleteEmployee = () => {
+    deleteEmployeeMutation(id);
   };
 
   const formik = useFormik({
@@ -39,6 +39,10 @@ const EmployeeCardContainer = ({ firstName, lastName, email, age, id }) => {
     formik.setValues({ firstName: firstName, lastName: lastName, email: email, age: age });
   }, [firstName, lastName, email, age]);
 
+  const handleOpen = () => {
+    setIsOpen(true);
+  };
+
   const handleCancel = () => {
     formik.setValues({ firstName: firstName, lastName: lastName, email: email, age: age });
     setIsOpen(false);
@@ -53,10 +57,10 @@ const EmployeeCardContainer = ({ firstName, lastName, email, age, id }) => {
       age={age}
       values={formik.values}
       isOpen={isOpen}
-      setIsOpen={setIsOpen}
       handleChange={formik.handleChange}
       handleSubmit={formik.handleSubmit}
       handleDeleteEmployee={handleDeleteEmployee}
+      handleOpen={handleOpen}
       handleCancel={handleCancel}
     />
   );

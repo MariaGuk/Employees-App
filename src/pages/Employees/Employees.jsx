@@ -17,7 +17,7 @@ const Employees = ({
   handleChange,
   handleSubmit,
   isOpen,
-  setIsOpen,
+  handleOpen,
   handleCancel,
 }) => (
   <Box>
@@ -42,7 +42,7 @@ const Employees = ({
       ))}
     </Container>
     <ButtonContainer>
-      <Button onClick={() => setIsOpen(true)} >
+      <Button onClick={handleOpen} >
         + Add new employee
       </Button>
     </ButtonContainer>
